@@ -1,5 +1,5 @@
 from .node import Node
-import json
+
 
 class JsonGetter:
     def __init__(self):
@@ -18,7 +18,7 @@ class JsonGetter:
             return "array"
         elif isinstance(data, str):
             return "string"
-        elif isinstance(data, bool):  #
+        elif isinstance(data, bool):
             return "boolean"
         elif isinstance(data, int):
             return "integer"
@@ -30,8 +30,6 @@ class JsonGetter:
             return str(type(data).__name__)
 
     def _process_data(self, data, parent_node, parent_key=None):
-        data_type = self._get_data_type(data)
-        
         if isinstance(data, dict):
             for key, value in data.items():
                 value_type = self._get_data_type(value)

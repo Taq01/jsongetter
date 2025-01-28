@@ -4,7 +4,8 @@
 # JSON GETTER
 <p>
 <b>
-jsongetter a headache-free way for dynamic search&retrieve through large JSON datasets.
+jsongetter a headache-free way for dynamic search &amp; retrieve through large JSON datasets.
+</b>
 </p>
 </div>
 

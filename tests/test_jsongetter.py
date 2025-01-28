@@ -143,11 +143,11 @@ class TestJXF(unittest.TestCase):
         string_results = mixed_gtr.type("value", "string")
         int_results = mixed_gtr.type("value", "integer")
         bool_results = mixed_gtr.type("value", "boolean")
-        
+
         print("String results:", string_results)
         print("Integer results:", int_results)
         print("Boolean results:", bool_results)
-        
+
         self.assertEqual(len(string_results), 1)
         self.assertEqual(len(int_results), 2)
         self.assertEqual(len(bool_results), 1)
@@ -155,6 +155,7 @@ class TestJXF(unittest.TestCase):
         self.assertIn(100, int_results)
         self.assertIn(200, int_results)
         self.assertEqual(bool_results[0], True)
+
     def test_type_order_maintained(self):
         ordered_data = {
             "values": [
