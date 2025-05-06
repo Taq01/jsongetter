@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="jsongetter",
     version="1.0.0",  
-    packages=find_packages(),
+    packages=["jsongetter"],
     description="A library for dynamic search and retrieve data from JSON datasets",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
