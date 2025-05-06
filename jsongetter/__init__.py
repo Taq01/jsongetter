@@ -1,3 +1,5 @@
+# jsongetter/__init__.py
 from .jsongetter import JsonGetter
-def load(data):
-    return JsonGetter.load(data)
+from .node import Node
+
+__all__ = ['JsonGetter', 'Node']

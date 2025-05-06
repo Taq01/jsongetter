@@ -1,58 +1,52 @@
 <div align="center" style="text-align: center;">
-
-
 # JSON GETTER
 <p>
 <b>
-jsongetter a headache-free way for dynamic search &amp; retrieve through large JSON datasets.
+JsonGetter: A headache-free way for dynamic search & retrieve through large JSON datasets.
 </b>
 </p>
 </div>
 
 ## Installation
 
-You can install the library using pip:
+install using pip:
 
-```
+```bash
 pip install jsongetter
 ```
 
+## Methods
+JsonGetter provides two main static methods for searching through JSON data:
 
-## Mehtods & Notes
+```python
+from jsongetter import JsonGetter
+
+# Search for values based on a specific key name and value type.
+type_results = JsonGetter.type_search(data, "key", "value_type")
+
+# Search for values that are nearby a specified key name. This method retrieves objects based on the key name.
+nearby_results = JsonGetter.nearby_search(data, "key", "value", ["key_1", "key_2"...])
+
+# When search_general=True is set, the search is not limited to nearby values in the JSON structure. 
+# This allows for finding keys at any depth within the specified object.
+nearby_results_deep = JsonGetter.nearby_search(data, "key", "value", ["key_1", "key_2"...], search_general=True)
+
 ```
-my_data=jg.load(json_data) 
-by_type_value=my_data.type("key", "value_type")
-by_nearby_value = my_data.nearby("key", "value", ["key_1", "key_2"...])
+## 
 
-```
-Types:
--**object**
--**array**
--**string**
--**boolean**
--**integer**
--**float**
--**null**
-
-
-### Note
-You can always narrow the search scope for a given case by reloading data (object) through the load().<br>
-However, the library currently cannot handle matching of multiple objects and only returns the first object it encounters, even if there are "nested".
-
-given_object<br>
-+--key_1<br>
-  -----+----key_object_match_sub<br>
-+--key_object_match<br>
-
-#key_object_match_sub returned<br>
+### Supported Types:
+- **object**
+- **array**
+- **string**
+- **boolean**
+- **integer**
+- **float**
+- **null**
 
 ## Usage
 
-
-```
-import jsongetter as jg
-import json
-
+```python
+from jsongetter import JsonGetter
 
 sample_data = {
     "flights": [
@@ -62,7 +56,10 @@ sample_data = {
             "arrive": "Los Angeles",
             "number": "FL001",
             "time": "14:30",
-            "info":{"passengers":121,"available_seats":{"A":[30,35,49,66]}},
+            "info": {
+                "passengers": 121,
+                "available_seats": {"A": [30, 35, 49, 66]}
+            },
         },
         {
             "plane": "Airbus A320",
@@ -75,42 +72,59 @@ sample_data = {
     "date": "2023-05-01"
 }
 
-jg=jg.load(sample_data) #load json data
+# Retrieve all unique departure cities from the sample data.
+depart_cities = JsonGetter.type_search(sample_data, "depart", "string")
+print(depart_cities)  # Output: ["New York", "Chicago"]
 
-#Return all values that match key&value
-depart_results = jg.type("depart", "string")
-print(json.dumps(depart_results, indent=2))
-#output:
-# [
-#   "New York",
-#   "Chicago"
-# ]
+# Get related flight information for a specific departure city.
+nearby_info = JsonGetter.nearby_search(
+    sample_data, "depart", "New York", ["number", "time"]
+)
+print(nearby_info)  # Output: [{"number": "FL001", "time": "14:30"}]
 
-#Since the library uses tree structure, nearby is horizontal search at sub-keyParent level and lower
-nearby_results = jg.nearby("depart", "New York", ["number", "time"])
-print(json.dumps(nearby_results, indent=2))
-#output:
-# [
-#   { 
-#     "number": "FL001",
-#     "time": "14:30"
-#   }
-# ]
+# Retrieve the date of the flights.
+date = JsonGetter.type_search(sample_data, "date", "string")
+print(date)  # Output: ['2023-05-01']
 
-date=jg.type("date","string")
-print(date)#['2023-05-01']
-how_many_flights=jg.type('flights',"array")[0]
-print(len(how_many_flights))#2
+# Count the total number of flights available in the sample data.
+flights = JsonGetter.type_search(sample_data, "flights", "array")[0]
+print(len(flights))  # Output: 2
 
-first_flight=jg.load(how_many_flights[0]) #narrowing the search scope
-print(first_flight.type("passengers","integer"))#[121]
-print(first_flight.type("available_seats","object")[0]['A'])#[30, 35, 49, 66]
+# Get the number of passengers for the first flight.
+passengers = JsonGetter.type_search(flights[0], "passengers", "integer")
+print(passengers)  # Output: [121]
+
+# Retrieve the available seats for the first flight.
+seats = JsonGetter.type_search(flights[0], "available_seats", "object")
+print(seats[0]['A'])  # Output: [30, 35, 49, 66]
+
+# Use nearby_search to get seat information.
+seat_info = JsonGetter.nearby_search(
+    flights[0], "available_seats", None, ["A"]
+)
+print(seat_info)  # Output: [{"A": [30, 35, 49, 66]}]
+
+# Get flight information related to a specific departure city.
+nearby_info = JsonGetter.nearby_search(
+    sample_data, "depart", "New York", ["info"]
+)
+print(nearby_info)  # Output: [{"info": {"passengers": 121, "available_seats": {"A": [30, 35, 49, 66]}}}]
+
+# Perform a deep search to find available seats, even if they are nested within other objects.
+deep_seats = JsonGetter.nearby_search(
+    sample_data, "depart", "New York", ["available_seats"], search_general=True
+)
+print(deep_seats)  # Output: [{"available_seats": {"A": [30, 35, 49, 66]}}]
+
 ```
+
 
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
 
 # LICENSE
 MIT License
